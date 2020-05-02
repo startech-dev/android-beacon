@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/BeaconAndroidApp.iml" filepath="$PROJECT_DIR$/BeaconAndroidApp.iml" group="BeaconAndroidApp" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="BeaconAndroidApp/app" />
+    </modules>
+  </component>
+</project>
