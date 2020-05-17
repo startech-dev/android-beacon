@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/BeaconAndroidApp.iml" filepath="$PROJECT_DIR$/BeaconAndroidApp.iml" group="BeaconAndroidApp" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="BeaconAndroidApp/app" />
+      <module fileurl="file://$PROJECT_DIR$/android-beacon.iml" filepath="$PROJECT_DIR$/android-beacon.iml" group="android-beacon" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="android-beacon/app" />
     </modules>
   </component>
 </project>

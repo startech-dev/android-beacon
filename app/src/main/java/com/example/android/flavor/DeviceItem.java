@@ -16,37 +16,91 @@
 package com.example.android.flavor;
 
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattService;
+import android.location.Location;
+
+import org.xml.sax.helpers.LocatorImpl;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
+
+class GattInfoItem {
+    BluetoothGattService service;
+    List<BluetoothGattCharacteristic> characteristics;
+    public void setGattService(BluetoothGattService srv) { service = srv; }
+    public BluetoothGattService getGattService() { return service; }
+    public void setCharacteristicList(List<BluetoothGattCharacteristic> chrList) { characteristics = chrList; }
+    public List<BluetoothGattCharacteristic> getCharacteristicList() {
+        return characteristics;
+    }
+
+}
 
 public class DeviceItem {
-
     private BluetoothDevice mDevice;
-
-    public DeviceItem(BluetoothDevice device)
+    private int m_RSSI;
+    private int m_BatteryLevel; // 180F, 2A19
+    private int m_TxPower;  // 1804, 2A07
+    private String m_tag;
+    private double m_Distance;
+    private String m_lastDeviceName = "";
+    private long m_lastDiscoveredSec = 0;
+    private String m_Status = "";
+    private Location m_lastDiscoveredLocation;
+    private ArrayList<GattInfoItem> m_Services = new ArrayList<>();
+    private  ArrayList<Integer> m_RSSIAry = new ArrayList<>();
+//    private ArrayList<double>
+    public DeviceItem()
     {
 
+    }
+
+    public void setDevice(BluetoothDevice device) {
         mDevice = device;
     }
 
-    /**
-     * Get the name of the Android version
-     */
     public String getName() {
         return mDevice.getName();
     }
 
-    /**
-     * Get the Android version number
-     */
     public String getAddress() {
         return mDevice.getAddress();
     }
-
-    /**
-     * Get the image resource ID
-     */
     public BluetoothDevice getDevice() {
         return mDevice;
     }
 
-
+    public void setRSSI(int rssi) { m_RSSI = rssi; }
+    public int getRSSI() { return m_RSSI; }
+    public ArrayList<GattInfoItem> getServices() { return m_Services; }
+    public void setServices(ArrayList<GattInfoItem> gatInfoList) { m_Services = gatInfoList; }
+    public void setTxPower(int tx) { m_TxPower = tx; }
+    public int getTXPower() { return m_TxPower; }
+    public void setBatterLevel(int level) { m_BatteryLevel = level; }
+    public int getBatteryLevel() { return m_BatteryLevel; }
+    public void setDistance(double distance) { m_Distance = distance; }
+    public double getDistance() { return m_Distance; }
+    public void setlastDeviceName(String deviceName) {
+        m_lastDeviceName = deviceName;
+    }
+    public String getlastDeviceName() {
+        return m_lastDeviceName;
+    }
+    public long getLastDiscoveredSec() {
+        return m_lastDiscoveredSec;
+    }
+    public void setLastDiscoveredSec(long sec) {
+        m_lastDiscoveredSec = sec;
+    }
+    public void setStatus(String  status) {
+        m_Status = status;
+    }
+    public String getStatus() { return m_Status; }
+    public void setDeviceTag(String tag) { m_tag = tag; }
+    public  String getDeviceTag() { return m_tag; }
+    public Location getLastLoc() { return m_lastDiscoveredLocation; }
+    public void setLastLoc(Location loc) { m_lastDiscoveredLocation = loc; }
+    
 }

@@ -16,10 +16,12 @@
 package com.example.android.flavor;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -38,20 +40,43 @@ public class LeDeviceAdapter extends ArrayAdapter<DeviceItem> {
 
     }
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         View listItemView = convertView;
         if(listItemView == null) {
             listItemView = LayoutInflater.from(getContext()).inflate(
-                    R.layout.list_item, parent, false);
+                R.layout.list_item, parent, false);
         }
 
-        DeviceItem currentDevice = getItem(position);
+        final DeviceItem currentDevice = getItem(position);
 
-        TextView nameTextView = (TextView) listItemView.findViewById(R.id.version_name);
+        final TextView nameTextView = (TextView) listItemView.findViewById(R.id.version_name);
         nameTextView.setText(currentDevice.getName());
         TextView numberTextView = (TextView) listItemView.findViewById(R.id.version_number);
         numberTextView.setText(currentDevice.getAddress());
+        TextView rssTextView = (TextView) listItemView.findViewById(R.id.rssTv);
+        rssTextView.setText("RSSI: " + String.valueOf(currentDevice.getRSSI()) + "   " + currentDevice.getStatus() + "   Dist:" + String.format("%.1fM", currentDevice.getDistance()) );
 
+        Button doorBtn = (Button)listItemView.findViewById(R.id.doorBtn);
+        doorBtn.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+                // TODO Auto-generated method stubS
+                currentDevice.setDeviceTag("door");
+                nameTextView.setTextColor(Color.BLUE);
+                System.out.println("Door button clicked on item;" + position);
+            }
+        });
+
+        Button deviceBtn = (Button)listItemView.findViewById(R.id.deviceBtn);
+        deviceBtn.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+                currentDevice.setDeviceTag(("device"));
+                nameTextView.setTextColor(Color.RED);
+                // TODO Auto-generated method stubS
+                System.out.println("Device button clicked on item;" + position);
+            }
+        });
 
         return listItemView;
     }
