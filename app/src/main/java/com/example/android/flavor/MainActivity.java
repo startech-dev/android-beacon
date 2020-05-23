@@ -33,6 +33,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -62,7 +63,7 @@ import java.util.TimerTask;
  * {@link MainActivity} shows a list of Android platform releases.
  * For each release, display the name, version number, and image.
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
     private static final int REQUEST_ENABLE_BT = 1;
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 1;
     private BluetoothAdapter bluetoothAdapter;
@@ -73,7 +74,6 @@ public class MainActivity extends AppCompatActivity {
     private static final long SCAN_PERIOD = 10000;
     private LeDeviceAdapter leDeviceListAdapter;
     private MainActivity mainActivity;
-    private boolean isLost = false;
     private double mytagDistance = -1;
     private double doorTagDistance = -1;
     private String lostDevice = "";
@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
 
         LocationManager mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
@@ -211,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
                             public void run() {
                                 for (int i = 0; i < bleDevices.size(); i++) {
                                     long timeDiff = System.currentTimeMillis() - bleDevices.get(i).getLastDiscoveredSec();
-                                    if (timeDiff > 7000) {  // if not connected over 10 sec, set rssi to 0 so we know device not available
+                                    if (timeDiff > 10000) {  // if not connected over 10 sec, set rssi to 0 so we know device not available
                                         bleDevices.get(i).setRSSI(0);
                                     }
                                 }
@@ -252,10 +252,30 @@ public class MainActivity extends AppCompatActivity {
             System.out.println("scanning...");
 
 
-            for(int i=0; i< bleDevices.size(); i++) {
+            for(int i = 0; i < bleDevices.size(); i++) {
                 // if device is already in the list only update rssi values
                 if(bleDevices.get(i).getAddress().equals(result.getDevice().getAddress())) {
-                    bleDevices.get(i).setRSSI(result.getRssi());
+//                    bleDevices
+                    if(bleDevices.get(i).m_RSSIAry.size() <= 2) {
+                        bleDevices.get(i).m_RSSIAry.add(result.getRssi());
+                    } else {
+                        bleDevices.get(i).m_RSSIAry.remove(0);
+                        bleDevices.get(i).m_RSSIAry.add(result.getRssi());
+                    }
+
+                    int avgRSSI = 0;
+                    int sumRSSI = 0;
+                    for(int j = 0; j < bleDevices.get(i).m_RSSIAry.size(); j++) {
+                        sumRSSI = sumRSSI + bleDevices.get(i).m_RSSIAry.get(j);
+                    }
+
+                    avgRSSI = sumRSSI / bleDevices.get(i).m_RSSIAry.size();
+                    System.out.println("rssi array for device" + result.getDevice().getName()+"   " + bleDevices.get(i).m_RSSIAry);
+                    if(bleDevices.get(i).m_RSSIAry.size() == 2 && (result.getRssi() > (avgRSSI + 10)) || (result.getRssi() < (avgRSSI - 10))) {
+                        bleDevices.get(i).setRSSI(avgRSSI);
+                    } else {
+                        bleDevices.get(i).setRSSI(result.getRssi());
+                    }
                     bleDevices.get(i).setLastDiscoveredSec(System.currentTimeMillis());
                     bleDevices.get(i).setStatus("");
                     bleDevices.get(i).setDistance(getDistance(result.getRssi(),-69));
@@ -267,7 +287,7 @@ public class MainActivity extends AppCompatActivity {
                         if(bleDevices.get(ii).getDeviceTag() != null) {
                             if (bleDevices.get(ii).getDeviceTag().equals(("device"))) {
                                 mytagDistance = bleDevices.get(ii).getDistance();
-                                lostDevice = result.getDevice().getName();
+                                lostDevice = bleDevices.get(ii).getName();
                                 lastLocation = bleDevices.get(ii).getLastLoc();
                                 lostRSSI = bleDevices.get(ii).getRSSI();
                             }
@@ -290,13 +310,13 @@ public class MainActivity extends AppCompatActivity {
                                     e.printStackTrace();
                                 }
 
-                                AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
-                                builder1.setMessage("You forgot to bring this thing? DeviceName:" + lostDevice + " last Discovered Location(LatLng):" +
+                                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(MainActivity.this);
+                                alertBuilder.setMessage("You forgot to bring this thing? DeviceName:" + lostDevice + " last Discovered Location(LatLng):" +
                                         (lastLocation != null?lastLocation.getLatitude():0) +", " +
                                         (lastLocation != null?lastLocation.getLongitude():0));
-                                builder1.setCancelable(true);
+                                alertBuilder.setCancelable(true);
 
-                                builder1.setPositiveButton(
+                                alertBuilder.setPositiveButton(
                                         "OK",
                                         new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int id) {
@@ -304,14 +324,32 @@ public class MainActivity extends AppCompatActivity {
                                                 dialog.cancel();
                                             }
                                         });
-                                AlertDialog alert11 = builder1.create();
-                                alert11.show();
+                                AlertDialog alertDlg = alertBuilder.create();
+                                alertDlg.show();
 
                                 alertShown = true;
 
                                 bleDevices.get(ii).setStatus("Leaving this device???");
-                                isLost = true;
-                            } else {
+                            } else if(alertShown == false && doorTagDistance > -1 && doorTagDistance < 1.5) {
+                                // just check if door tag device is in 1.5m range and show alert
+                                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(MainActivity.this);
+                                alertBuilder.setMessage("Do you have all the things you need? Location:" +  (lastLocation != null?lastLocation.getLatitude():0) +", " +
+                                        (lastLocation != null?lastLocation.getLongitude():0));
+                                alertBuilder.setCancelable(true);
+
+                                alertBuilder.setPositiveButton(
+                                        "OK",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+                                                alertShown = false;
+                                                dialog.cancel();
+                                            }
+                                        });
+                                AlertDialog alertDlg = alertBuilder.create();
+                                alertDlg.show();
+                                alertShown = true;
+                            }
+                            else {
                                 bleDevices.get(ii).setStatus("");
                             }
                         }
@@ -335,44 +373,13 @@ public class MainActivity extends AppCompatActivity {
                 bleDevices.add(devItem);
                 leDeviceListAdapter.notifyDataSetChanged();
             }
-//                    bleDevices.add(new DeviceItem(device.getName(), "1.6",1 ));
-//            System.out.println("Device Name: " + result.getDevice().getName() + " rssi: " + result.getRssi() + "\n" );
-//            System.out.println("get tx power;" + result.getTxPower());
-
-            // auto scroll for text view
-//            final int scrollAmount = peripheralTextView.getLayout().getLineTop(peripheralTextView.getLineCount()) - peripheralTextView.getHeight();
-//            // if there is no need to scroll, scrollAmount will be <=0
-//            if (scrollAmount > 0)
-//                peripheralTextView.scrollTo(0, scrollAmount);
         }
     };
 
     public double getDistance(int rssi, int txPower) {
-        /*
-         * RSSI = TxPower - 10 * n * lg(d)
-         * n = 2 (in free space)
-         *
-         * d = 10 ^ ((TxPower - RSSI) / (10 * n))
-         */
-        System.out.println( "get distance;" + Math.pow(10d, ((double) txPower - rssi) / (10 * 2)));
         return Math.pow(10d, ((double) txPower - rssi) / (10 * 2));
     }
 
-//    private BluetoothAdapter.LeScanCallback leScanCallback =
-//        new BluetoothAdapter.LeScanCallback() {
-//        @Override
-//        public void onLeScan(final BluetoothDevice device, final int rssi,
-//                             final byte[] scanRecord) {
-//
-//            runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//
-//
-//
-//                }
-//            });
-//        }
-//    };
+
 
 }

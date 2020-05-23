@@ -19,10 +19,6 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.location.Location;
-
-import org.xml.sax.helpers.LocatorImpl;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,8 +46,8 @@ public class DeviceItem {
     private String m_Status = "";
     private Location m_lastDiscoveredLocation;
     private ArrayList<GattInfoItem> m_Services = new ArrayList<>();
-    private  ArrayList<Integer> m_RSSIAry = new ArrayList<>();
-//    private ArrayList<double>
+    public  ArrayList<Integer> m_RSSIAry = new ArrayList<>();
+    //    private ArrayList<double>
     public DeviceItem()
     {
 
@@ -102,5 +98,5 @@ public class DeviceItem {
     public  String getDeviceTag() { return m_tag; }
     public Location getLastLoc() { return m_lastDiscoveredLocation; }
     public void setLastLoc(Location loc) { m_lastDiscoveredLocation = loc; }
-    
+
 }

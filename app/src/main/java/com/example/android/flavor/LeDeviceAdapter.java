@@ -16,6 +16,8 @@
 package com.example.android.flavor;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,10 +33,12 @@ import java.util.ArrayList;
 public class LeDeviceAdapter extends ArrayAdapter<DeviceItem> {
 
     private static final String LOG_TAG = LeDeviceAdapter.class.getSimpleName();
+    private Context context;
 
 
     public LeDeviceAdapter(Activity context, ArrayList<DeviceItem> bleDevices) {
         super(context, 0, bleDevices);
+        this.context = context;
     }
     public void addDevice(DeviceItem device) {
 
@@ -44,7 +48,7 @@ public class LeDeviceAdapter extends ArrayAdapter<DeviceItem> {
         View listItemView = convertView;
         if(listItemView == null) {
             listItemView = LayoutInflater.from(getContext()).inflate(
-                R.layout.list_item, parent, false);
+                    R.layout.list_item, parent, false);
         }
 
         final DeviceItem currentDevice = getItem(position);
@@ -75,6 +79,13 @@ public class LeDeviceAdapter extends ArrayAdapter<DeviceItem> {
                 nameTextView.setTextColor(Color.RED);
                 // TODO Auto-generated method stubS
                 System.out.println("Device button clicked on item;" + position);
+            }
+        });
+
+        listItemView.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+//                Intent intent= new Intent(context, MapActivity.class);
+//                context.startActivity(intent);
             }
         });
 

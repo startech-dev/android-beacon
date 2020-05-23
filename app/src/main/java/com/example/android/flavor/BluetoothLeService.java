@@ -170,7 +170,7 @@ public class BluetoothLeService extends Service {
     }
 
 
-//
+    //
     private void broadcastUpdate(final String action,
                                  final BluetoothGattCharacteristic characteristic) {
         final Intent intent = new Intent(action);

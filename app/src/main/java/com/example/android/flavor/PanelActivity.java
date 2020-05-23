@@ -32,6 +32,5 @@ public class PanelActivity extends AppCompatActivity {
         recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(serviceAdapter);
-//        System.out.print("gatt service item;" + activeDevice.getServices().size());
     }
 }
