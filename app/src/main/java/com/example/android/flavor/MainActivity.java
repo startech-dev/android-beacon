@@ -219,10 +219,7 @@ public class MainActivity extends AppCompatActivity{
             }
         });
         t.start();
-
     }
-
-
 
     private void scanLeDevice(final boolean enable) {
         // when device accel is low(device not moving) lets put this to ScanSettings.SCAN_MODE_OPPORTUNISTIC
