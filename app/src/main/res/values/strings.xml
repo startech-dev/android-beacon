@@ -15,4 +15,5 @@
 <resources>
     <string name="app_name">ScanBLEDevices</string>
     <string name="ble_not_supported">BLE is not supported on this device.</string>
+    <string name="mapbox_access_token" translatable="false">pk.eyJ1Ijoid2ViZGV2Z3V5MzIwIiwiYSI6ImNrYWZqbWw0czAwaHAyeHFqc3R1dWQxcmYifQ.S9R68x-KT8A7xwuRCJ_Rmg</string>
 </resources>

@@ -54,6 +54,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.mapbox.mapboxsdk.Mapbox;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Timer;
@@ -129,6 +131,8 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+        Mapbox.getInstance(getApplicationContext(), getString(R.string.mapbox_access_token));
+        Mapbox.setAccessToken(getString(R.string.mapbox_access_token));
 
         LocationManager mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
