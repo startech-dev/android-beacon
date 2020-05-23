@@ -4,6 +4,8 @@ import android.os.Bundle;
 
 import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.camera.CameraPosition;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.location.LocationComponent;
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
 import com.mapbox.mapboxsdk.location.modes.CameraMode;
@@ -63,6 +65,13 @@ public class MapActivity extends AppCompatActivity {
 
                             // Set the component's render mode
                             locationComponent.setRenderMode(RenderMode.COMPASS);
+                            CameraPosition position = new CameraPosition.Builder()
+                                    .target(new LatLng(MainActivity.currentLoc.getLatitude(), MainActivity.currentLoc.getLongitude()))
+                                    .zoom(18)
+                                    .tilt(20)
+                                    .build();
+                            mapboxMap.setCameraPosition(position);
+
                         } else {
 
                             PermissionsManager permissionsManager;

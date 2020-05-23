@@ -75,11 +75,12 @@ public class MainActivity extends AppCompatActivity{
     private Location lastLocation = null;
     private int lostRSSI = -1;
     private boolean alertShown = false;
-    private Location currentLoc = null;
+    public static Location currentLoc = null;
     private final LocationListener mLocationListener = new LocationListener() {
         @Override
         public void onLocationChanged(final Location location) {
             //your code here
+            System.out.println("location updated:" + location);
             currentLoc = location;
         }
 
