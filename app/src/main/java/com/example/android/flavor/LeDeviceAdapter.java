@@ -84,8 +84,8 @@ public class LeDeviceAdapter extends ArrayAdapter<DeviceItem> {
 
         listItemView.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-//                Intent intent= new Intent(context, MapActivity.class);
-//                context.startActivity(intent);
+                Intent intent= new Intent(context, MapActivity.class);
+                context.startActivity(intent);
             }
         });
 
